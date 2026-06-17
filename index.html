@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ahlem Ammar — AI Engineer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -96,17 +96,27 @@ section{border-bottom:1px solid var(--line)}
 .stat-n{font-family:var(--serif);font-size:2.5rem;font-style:italic;color:var(--ink);line-height:1}
 .stat-l{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.4rem}
 
-.proj-row{display:grid;grid-template-columns:60px 1fr 30px;gap:2rem;align-items:start;padding:2.5rem 0;border-bottom:1px solid var(--faint);transition:all .2s;cursor:default}
-.proj-row:first-child{border-top:1px solid var(--faint)}
-.proj-row:hover{background:var(--faint);margin:0 -3rem;padding-left:3rem;padding-right:3rem}
-.proj-row:hover .p-num{color:var(--accent)}
-.proj-row:hover .p-arrow{opacity:1;transform:translate(3px,-3px)}
-.p-num{font-family:var(--mono);font-size:11px;color:var(--line);padding-top:4px;transition:color .2s}
-.p-title{font-family:var(--serif);font-size:1.6rem;font-style:italic;margin-bottom:.5rem;letter-spacing:-.01em}
-.p-desc{font-size:13px;color:var(--muted);line-height:1.7;max-width:580px;margin-bottom:1rem}
+/* New Projects Cards Layout */
+.projects-grid{display:grid;grid-template-columns:1fr;gap:4rem}
+.proj-card{background:var(--paper);border:1px solid var(--line);border-radius:4px;overflow:hidden;display:flex;flex-direction:column;transition:transform .3s ease,box-shadow .3s ease}
+.proj-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(13,13,13,0.04)}
+.proj-card-content{padding:3rem;display:grid;grid-template-columns:60px 1fr 40px;gap:2rem;align-items:start;border-bottom:1px solid var(--faint)}
+.p-num{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:600;padding-top:4px}
+.p-title{font-family:var(--serif);font-size:2rem;font-style:italic;margin-bottom:.75rem;letter-spacing:-.01em}
+.p-desc{font-size:14px;color:var(--muted);line-height:1.8;max-width:720px;margin-bottom:1.5rem}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
 .tag{font-family:var(--mono);font-size:10px;background:var(--faint);color:var(--muted);padding:3px 8px;border-radius:2px;border:1px solid var(--line);letter-spacing:.04em}
-.p-arrow{color:var(--muted);opacity:0;transition:all .25s;font-size:1.4rem;align-self:center}
+.p-arrow{color:var(--muted);font-size:1.6rem;text-align:right;transition:transform .25s,color .25s}
+.proj-card:hover .p-arrow{color:var(--accent);transform:translate(3px,-3px)}
+
+/* Multi-Images Section Inside Card */
+.proj-gallery{background:var(--bone);padding:2rem 3rem;display:flex;gap:1.5rem;overflow-x:auto;scrollbar-width:none}
+.proj-gallery::-webkit-scrollbar{display:none}
+.gallery-img{flex:0 0 280px;aspect-ratio:16/10;background:var(--faint);border:1px solid var(--line);border-radius:2px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.gallery-img::before{content:'[ Preview Layer ]';font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.05em}
+
+/* If you drop actual images into the structure later */
+.gallery-img img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
 
 .skills-cols{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line)}
 .s-col{padding:2.5rem;border-right:1px solid var(--line)}
@@ -166,8 +176,20 @@ footer{padding:1.5rem 3rem;display:flex;justify-content:space-between;align-item
   .contact-grid{grid-template-columns:1fr;gap:3rem}
   .hero-bottom{flex-direction:column;gap:1rem}
   footer{flex-direction:column;gap:.5rem;text-align:center}
-  .proj-row:hover{margin:0;padding:2.5rem 0}
+  .proj-card-content{grid-template-columns:1fr 40px;padding:2rem}
+  .p-num{grid-column:span 2}
+  .proj-gallery{padding:1.5rem}
 }
+.lightbox-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:99999;align-items:center;justify-content:center;padding:2rem;cursor:zoom-out}
+.lightbox-overlay.active{display:flex}
+.lightbox-inner{position:relative;max-width:90vw;max-height:88vh;display:flex;align-items:center;gap:1rem}
+.lightbox-img-wrap{max-width:80vw;max-height:80vh;overflow:hidden;border-radius:6px}
+.lightbox-img-wrap img{max-width:100%;max-height:80vh;object-fit:contain;display:block}
+.lb-close:hover{color:#fff}
+.lb-nav{background:none;border:none;color:rgba(255,255,255,.45);font-size:2.2rem;cursor:pointer;padding:.5rem;flex-shrink:0}
+.lb-nav:hover{color:#fff}
+.lb-counter{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);font-family:monospace;font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.1em}
+.lb-close{position:fixed;top:1.4rem;right:1.6rem;color:rgba(255,255,255,.55);font-size:28px;cursor:pointer;background:none;border:none;z-index:100000;line-height:1}
 </style>
 </head>
 <body>
@@ -265,46 +287,161 @@ footer{padding:1.5rem 3rem;display:flex;justify-content:space-between;align-item
       <div><div class="sec-num">02 / 04</div><h2 class="sec-title">Projects</h2></div>
       <div class="sec-aside">AI systems built<br>for production<br>environments</div>
     </div>
-    <div>
-      <div class="proj-row fade">
-        <div class="p-num">001</div>
-        <div>
-          <div class="p-title">AI Test Automation Platform</div>
-          <p class="p-desc">End-to-end testing platform that transforms natural language descriptions into executable Playwright test scenarios. Agentic multi-LLM system with full browser automation and report generation.</p>
-          <div class="tags"><span class="tag">LangChain</span><span class="tag">LangGraph</span><span class="tag">Claude API</span><span class="tag">Playwright</span><span class="tag">Flask</span><span class="tag">Groq</span></div>
+
+    <div class="projects-grid">
+      
+      <!-- Project 1 -->
+      <div class="proj-card fade">
+        <div class="proj-card-content">
+          <div class="p-num">001</div>
+          <div>
+            <div class="p-title">AI Test Automation Platform</div>
+            <p class="p-desc">Built an intelligent, agent-based automation testing platform that autonomously executes, and analyzes end-to-end test cases. The solution uses AI to generate tests, run them in real time with detailed action tracking, and produce comprehensive reports with performance metrics .Including an integrated bug tracker that automatically logs detected issues, generates Playwright code, and creates confirmation and regression tests using a graph-based approach. The platform delivers automated reports with performance insights significantly reducing manual QA effort and accelerating release cycles.</p>
+            <div class="tags"><span class="tag">LangChain</span><span class="tag">LangGraph</span><span class="tag">Claude API</span><span class="tag">Playwright</span><span class="tag">Flask</span><span class="tag">Groq</span></div>
+          </div>
+          <div class="p-arrow">↗</div>
         </div>
-        <div class="p-arrow">↗</div>
+          <div class="proj-gallery">
+          <div class="gallery-img">
+            <img src="assets/bg-01.png" alt="Platform Dashboard View">
+          </div>
+          
+          <div class="gallery-img">
+            <img src="assets/bg-02.png" alt="Platform Dashboard View">
+          </div>
+      
+          <div class="gallery-img">
+            <img src="assets/bg-03.png" alt="Platform Dashboard View">
+          </div>
+          <div class="gallery-img">
+            <img src="assets/bg-04.png" alt="Platform Dashboard View">
+          </div>
+          
+        </div>
       </div>
-      <div class="proj-row fade d1">
-        <div class="p-num">002</div>
-        <div>
-          <div class="p-title">Agentic Customer Support Chatbot</div>
-          <p class="p-desc">Intelligent chatbot with advanced RAG architecture that autonomously resolves inquiries or escalates to back-office systems. Multi-language support, real-time translation, geospatial analytics.</p>
-          <div class="tags"><span class="tag">Haystack</span><span class="tag">Qdrant</span><span class="tag">Google AI</span><span class="tag">FastAPI</span><span class="tag">PostgreSQL</span><span class="tag">AsyncPG</span></div>
+
+      <!-- Project 2 -->
+      <div class="proj-card fade d1">
+        <div class="proj-card-content">
+          <div class="p-num">002</div>
+          <div>
+            <div class="p-title">Agentic Customer Support Chatbot</div>
+            <p class="p-desc">Developed Isabel, an AI-powered virtual assistant integrated into EFFIA's parking management platform. The assistant handles customer inquiries in real-time, analyzes parking-related issues, proposes personalized solutions, and escalates complex tickets to support teams. Features natural language interface deployed on iOS & Android, providing 24/7 customer support and reducing response times while improving satisfaction.</p>
+            <div class="tags"><span class="tag">Haystack</span><span class="tag">Qdrant</span><span class="tag">Google AI</span><span class="tag">FastAPI</span><span class="tag">PostgreSQL</span><span class="tag">AsyncPG</span></div>
+          </div>
+          <div class="p-arrow">↗</div>
         </div>
-        <div class="p-arrow">↗</div>
+        <div class="proj-gallery">
+          <div class="gallery-img">
+            <img src="assets/isa-01.png" alt="Platform Dashboard View">
+          </div>
+          
+          <div class="gallery-img">
+            <img src="assets/isa-02.png" alt="Platform Dashboard View">
+          </div>
+      
+          <div class="gallery-img">
+            <img src="assets/isa-03.png" alt="Platform Dashboard View">
+          </div>
+          <div class="gallery-img">
+            <img src="assets/isa-04.png" alt="Platform Dashboard View">
+          </div>
+        </div>
+        </div>
       </div>
-      <div class="proj-row fade d2">
-        <div class="p-num">003</div>
-        <div>
-          <div class="p-title">Demand-Based Pricing Forecaster</div>
-          <p class="p-desc">ML pipeline for pricing forecasting and predictive analytics using ensemble models and time-series methods. Interactive dashboards delivering actionable business insights.</p>
-          <div class="tags"><span class="tag">XGBoost</span><span class="tag">TensorFlow</span><span class="tag">Dask</span><span class="tag">LSTM</span><span class="tag">Plotly</span><span class="tag">Streamlit</span></div>
+
+      <!-- Project 3 -->
+      <div class="proj-card fade d2">
+        <div class="proj-card-content">
+          <div class="p-num">003</div>
+          <div>
+            <div class="p-title">Analytical Agent Conversational Data Analysis</div>
+            <p class="p-desc">
+An AI-powered analytical agent that accepts any data file (CSV, Excel, json …) and delivers a full analytical study autonomously. Built on a LangGraph multi-agent architecture with custom tools, a FastAPI backend, and a React frontend. Upload your data, ask any question, and get instant insights. The agent processes, reasons, and returns structured interactive charts and visualizations rendered in real time. A complete end-to-end pipeline from raw data to intelligent, conversational analytics..</p>
+            <div class="tags"><span class="tag">AI Agent Developmen</span><span class="tag">Data Analysis</span><span class="tag">Data Visualization</span><span class="tag">LangChain</span><span class="tag">Langraph</span><span class="tag">Flask</span><span class="tag">Reactjs</span></div>
+          </div>
+          <div class="p-arrow">↗</div>
         </div>
-        <div class="p-arrow">↗</div>
+        <div class="proj-gallery">
+          <div class="gallery-img">
+            <img src="assets/AnalyticalAgent_01.png" alt="Platform Dashboard View">
+          </div>
+     
+          <div class="gallery-img">
+            <img src="assets/AnalyticalAgent_02.png" alt="Platform Dashboard View">
+          </div>
+          <div class="gallery-img">
+            <img src="assets/AnalyticalAgent_03.png" alt="Platform Dashboard View">
+          </div>
+         
+        </div>
       </div>
-      <div class="proj-row fade d3">
-        <div class="p-num">004</div>
-        <div>
-          <div class="p-title">Business Intelligence Platform</div>
-          <p class="p-desc">Full-stack data-driven BI platform with production-grade FastAPI backends. Deployed across AWS, Azure, GCP with full containerisation. Transforms complex datasets into actionable insights.</p>
-          <div class="tags"><span class="tag">FastAPI</span><span class="tag">Docker</span><span class="tag">AWS</span><span class="tag">MongoDB</span><span class="tag">Redis</span><span class="tag">Kubernetes</span></div>
+
+      <!-- Project 4 -->
+      <div class="proj-card fade d3">
+        <div class="proj-card-content">
+          <div class="p-num">004</div>
+          <div>
+            <div class="p-title">Artistic QR Code Generator - SD Pipeline Multi-Stage Refinement</div>
+            <p class="p-desc">A custom-built end-to-end AI pipeline that transforms ordinary QR codes into visually stunning artworks , while remaining fully scannable.</p>
+            <p class="p-desc">This project combines multiple cutting-edge techniques and strategies to achieve the perfect balance between aesthetics and functionality.</p>
+            <p class="p-desc">⚙️ Technical Approach
+            * Stable Diffusion and ControlNet : core image generation backbone with structural conditioning.
+            * Refiner models : multi-pass detail enhancement for sharper, higher-fidelity outputs.
+            * Multi-strategy pipeline combining img2img, and guided diffusion to maximize visual quality and scan reliability..</p>
+            <div class="tags"><span class="tag">FastAPI</span><span class="tag">Docker</span><span class="tag">AWS</span><span class="tag">MongoDB</span><span class="tag">Redis</span><span class="tag">Kubernetes</span></div>
+          </div>
+          <div class="p-arrow">↗</div>
         </div>
-        <div class="p-arrow">↗</div>
+        <div class="proj-gallery">
+          <div class="gallery-img">
+             <img src="assets/qr-04.png" alt="Platform Dashboard View">
+          </div>
+          <div class="gallery-img">
+            <img src="assets/qr-01.png" alt="Platform Dashboard View">
+          </div>
+          <div class="gallery-img">
+             <img src="assets/qr-02.png" alt="Platform Dashboard View">
+          </div>
+          <div class="gallery-img">
+             <img src="assets/qr-03.png" alt="Platform Dashboard View">
+          </div>
+          
+        </div>
+      </div>
+
+    <!-- Project 5 -->
+    <div class="proj-card fade d4">
+        <div class="proj-card-content">
+          <div class="p-num">005</div>
+          <div>
+            <div class="p-title">demand-based pricing forecasting System</div>
+            <p class="p-desc">Built and optimized machine learning pipelines for demand-based pricing forecasting and
+predictive analytics using TFT. Delivered actionable insights through interactive
+dashboards and data visualization tools that drove strategic
+business decisions and improved customer engagement.</p>
+            <div class="tags"><span class="tag">Temporal Fusion Transformer (TFT)</span><span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">MLFLOW</span><span class="tag">React</span><span class="tag"></span></div>
+          </div>
+          <div class="p-arrow">↗</div>
+        </div>
+        <div class="proj-gallery">
+          <div class="gallery-img">
+            <img src="assets/dash02 (1).PNG" alt="Platform Dashboard View">
+          </div>
+          <div class="gallery-img">
+             <img src="assets/dash01.PNG" alt="Platform Dashboard View">
+          </div>
+
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+
+
+
+
 
 <section id="skills">
   <div class="sec">
@@ -420,7 +557,13 @@ footer{padding:1.5rem 3rem;display:flex;justify-content:space-between;align-item
   <span style="font-family:var(--serif);font-style:italic;font-size:13px">AI Engineer · Tunisia</span>
   <span>ahlemammar765@gmail.com</span>
 </footer>
-
+<div class="lightbox-overlay" id="lb">
+  <button class="lb-close" id="lb-close">&times;</button>
+  <button class="lb-nav" id="lb-prev">&#8249;</button>
+  <div class="lightbox-img-wrap"><img id="lb-img" src="" alt=""/></div>
+  <button class="lb-nav" id="lb-next">&#8250;</button>
+  <div class="lb-counter" id="lb-counter"></div>
+</div>
 <script>
 const cur=document.getElementById('cur'),ring=document.getElementById('ring');
 let mx=0,my=0,rx=0,ry=0;
@@ -435,6 +578,50 @@ document.querySelectorAll('.fade').forEach(el=>obs.observe(el));
 document.querySelectorAll('a[href^="#"]').forEach(a=>{
   a.addEventListener('click',e=>{e.preventDefault();document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'})});
 });
+(function(){
+  let imgs=[],cur=0;
+  function open(gallery,idx){
+    imgs=[...gallery.querySelectorAll('img')];
+    cur=idx; show();
+    document.getElementById('lb').classList.add('active');
+    document.body.style.overflow='hidden';
+  }
+  function close(){
+    document.getElementById('lb').classList.remove('active');
+    document.body.style.overflow='';
+  }
+  function show(){
+    document.getElementById('lb-img').src=imgs[cur].src;
+    document.getElementById('lb-img').alt=imgs[cur].alt;
+    document.getElementById('lb-counter').textContent=
+      (cur+1)+' / '+imgs.length;
+  }
+  document.querySelectorAll('.proj-gallery').forEach(g=>{
+    g.querySelectorAll('.gallery-img').forEach((el,i)=>{
+      el.style.cursor='zoom-in';
+      el.addEventListener('click',()=>open(g,i));
+    });
+  });
+  document.getElementById('lb-close').onclick=close;
+  document.getElementById('lb').addEventListener('click',function(e){
+    if(e.target===this)close();
+  });
+  document.getElementById('lb-prev').onclick=e=>{
+    e.stopPropagation();cur=(cur-1+imgs.length)%imgs.length;show();
+  };
+  document.getElementById('lb-next').onclick=e=>{
+    e.stopPropagation();cur=(cur+1)%imgs.length;show();
+  };
+  document.addEventListener('keydown',e=>{
+    if(!document.getElementById('lb').classList.contains('active'))return;
+    if(e.key==='Escape')close();
+    if(e.key==='ArrowLeft')
+      {cur=(cur-1+imgs.length)%imgs.length;show();}
+    if(e.key==='ArrowRight')
+      {cur=(cur+1)%imgs.length;show();}
+  });
+})();
 </script>
+
 </body>
 </html>
