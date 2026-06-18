@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="assets/portrait.jpg" />
+
   <title>Ahlem Ammar — AI &amp; NLP Engineer</title>
   <meta name="description" content="AI Engineer specialising in NLP, RAG pipelines and multi-agent orchestration. Building production AI systems from research to deployment." />
   <meta name="theme-color" content="#0d0d0d" />
@@ -413,6 +415,27 @@
     }
     .skill-group-border-b { border-bottom: 1px solid var(--line); }
   </style>
+  <script>
+  window.addEventListener('load', () => {
+    const img = new Image();
+    img.src = 'assets/portrait.jpg';
+    img.onload = () => {
+      const size = 64;
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, size/2, 0, Math.PI*2);
+      ctx.closePath();
+      ctx.clip();
+      ctx.drawImage(img, 0, 0, size, size);
+      const link = document.querySelector("link[rel='icon']") || document.createElement('link');
+      link.rel = 'icon';
+      link.href = canvas.toDataURL('image/jpg');
+      document.head.appendChild(link);
+    };
+  });
+</script>
 </head>
 <body>
 
@@ -1193,6 +1216,9 @@ function buildDemo(key){
   });
   observeReveals(list);
 })();
+
+
+
 </script>
 </body>
 </html>
